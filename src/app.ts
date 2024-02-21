@@ -5,7 +5,7 @@ import { TodoControllers } from "./controllers/todo.controllers";
 // Controllers
 // Integração com o framework 
 
-// Serviços 
+// Services
 // Regras de negócio sem influência do framework
 
 const app = express();

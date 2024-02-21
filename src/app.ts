@@ -1,68 +1,24 @@
 import express, { json } from "express";
+import { TodoService } from "./services/todo.service";
+import { TodoControllers } from "./controllers/todo.controllers";
 
-// O que o Express faz?
-// Permite a criação de rotas
-// Oferece/levantar o servidor local
+// Controllers
+// Integração com o framework 
+
+// Serviços 
+// Regras de negócio sem influência do framework
 
 const app = express();
 
 app.use(json());
 
-app.get("/hello", (req, res) => {
-   // Resposta é o que nós desejamos estabelecer como retorno dessa rota
-   return res.status(200).json({ message: "Olá mundo!" });
-});
+const todoService = new TodoControllers();
 
-/* Crudzinho */
-interface ITodo {
-   id: number;
-   title: string;
-   content: string;
-}
+app.get("/todos", todoService.getTodos);
 
-let id = 1;
+app.post("/todos", todoService.create);
 
-export const todoList: ITodo[] = [];
-
-app.get("/todos", (req, res) => {
-   return res.status(200).json(todoList);
-});
-
-app.post("/todos", (req, res) => {
-   //console.log(req.body);
-
-   const newTodo = {
-      id,
-      title: req.body.title,
-      content: req.body.content,
-   };
-
-   //console.log(newTodo);
-
-   todoList.push(newTodo);
-
-   //console.log(todoList);
-
-   id++;
-
-   return res.status(201).json(newTodo);
-});
-
-app.delete("/todos/:todoId", (req, res) => {
-   const { todoId } = req.params;
-
-   console.log(todoId);
-
-   const index = todoList.findIndex((todo) => todo.id === Number(todoId));
-
-   console.log(index);
-
-   todoList.splice(index, 1);
-
-   console.log(todoList);
-
-   return res.status(204).json();
-});
+app.delete("/todos/:todoId", todoService.delete);
 
 app.listen(3000, () => {
    console.log("API successfully started");

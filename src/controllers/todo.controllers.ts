@@ -1,40 +1,52 @@
 import { Request, Response } from "express";
 import { TodoService } from "../services/todo.service";
 
-export class TodoControllers{
-    getTodos(req: Request, res: Response){
-        const todoService = new TodoService();
+export class TodoControllers {
+   getTodos(req: Request, res: Response) {
+      const { search } = req.query;
 
-        const response = todoService.getTodos();
+      const todoService = new TodoService();
 
-        res.status(200).json(response)
-    }
+      const response = todoService.getTodos(search as string);
 
-    create(req: Request, res: Response){
-        const todoService = new TodoService();
+      return res.status(200).json(response);
+   }
 
-        const response = todoService.create(req.body);
+   getOneTodo(req: Request, res: Response) {
+      const { todo } = res.locals;
 
-        res.status(201).json(response);
-    }
+      const todoService = new TodoService();
 
-    update(req: Request, res: Response){
-        const todoService = new TodoService();
+      const response = todoService.getOneTodo(todo);
 
-        const { todoId } = req.params;
+      return res.status(200).json(response);
+   }
 
-        const response = todoService.update(Number(todoId), req.body);
+   create(req: Request, res: Response) {
+      const todoService = new TodoService();
 
-        res.status(200).json(response);
-    }
+      const response = todoService.create(req.body);
 
-    delete(req: Request, res: Response){
-        const todoService = new TodoService();
+      return res.status(201).json(response);
+   }
 
-        const { todoId } = req.params;
+   update(req: Request, res: Response) {
+      const todoService = new TodoService();
 
-        todoService.delete(Number(todoId));
+      const { todoId } = req.params;
 
-        res.status(204).json();
-    }
+      const response = todoService.update(Number(todoId), req.body);
+
+      res.status(200).json(response);
+   }
+
+   delete(req: Request, res: Response) {
+      const todoService = new TodoService();
+
+      const { todoId } = req.params;
+
+      todoService.delete(Number(todoId));
+
+      return res.status(204).json();
+   }
 }

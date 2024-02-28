@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { todoList } from "../database/database";
+import { AppError } from "../errors/AppError";
 
 export class IsTodoIdValid{
     static execute(req: Request, res: Response, next: NextFunction){
@@ -8,7 +9,7 @@ export class IsTodoIdValid{
         const existingTodo = todoList.find(todo => todo.id === Number(todoId));
 
         if(!existingTodo){
-            return res.status(404).json({ error: "Todo not found."});
+            throw new AppError("Todo not found.", 404);
         }
 
         res.locals.todo = existingTodo;

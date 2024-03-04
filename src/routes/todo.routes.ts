@@ -1,8 +1,8 @@
 import { Router } from "express";
 import { TodoControllers } from "../controllers/todo.controllers";
-import { IsCreateBodyDefined } from "../middleware/isCreateBodyDefined.middleware";
-import { IsCreateBodyDataTypeValid } from "../middleware/isCreateBodyDataTypeValid.middleware";
 import { IsTodoIdValid } from "../middleware/isTodoIdValid.middleware";
+import { BodyValidator } from "../middleware/bodyValidator.middleware";
+import { todoCreateBodySchema, todoUpdateBodySchema } from "../schemas/todo.schemas";
 
 export const todoRoutes = Router();
 
@@ -12,13 +12,13 @@ todoRoutes.get("/", todoControllers.getTodos);
 
 todoRoutes.get("/:todoId", IsTodoIdValid.execute, todoControllers.getOneTodo);
 
-todoRoutes.post(
-   "/",
-   IsCreateBodyDefined.execute,
-   IsCreateBodyDataTypeValid.execute,
-   todoControllers.create
-);
+todoRoutes.post("/", BodyValidator.execute(todoCreateBodySchema), todoControllers.create);
 
-todoRoutes.patch("/:todoId", IsTodoIdValid.execute, todoControllers.update);
+todoRoutes.patch(
+   "/:todoId",
+   BodyValidator.execute(todoUpdateBodySchema),
+   IsTodoIdValid.execute,
+   todoControllers.update
+);
 
 todoRoutes.delete("/:todoId", IsTodoIdValid.execute, todoControllers.delete);

@@ -1,5 +1,5 @@
 import { generateId, todoList } from "../database/database";
-import { ITodo, TCreateTodoBody, TUpdateTodoBody } from "../interfaces/todo.interface";
+import { TTodo, TTodoCreateBody, TTodoUpdateBody } from "../interfaces/todo.interface";
 
 export class TodoService {
    getTodos(search?: string) {
@@ -13,15 +13,18 @@ export class TodoService {
       }
    }
 
-   getOneTodo(todo: ITodo) {
+   getOneTodo(todo: TTodo) {
       return todo;
    }
 
-   create(data: TCreateTodoBody) {
+   create(data: TTodoCreateBody) {
+      const now = new Date();
+
       const newTodo = {
          id: generateId(),
          title: data.title,
          content: data.content,
+         createdAt: now
       };
 
       todoList.push(newTodo);
@@ -29,13 +32,15 @@ export class TodoService {
       return newTodo;
    }
 
-   update(updatingId: number, data: TUpdateTodoBody) {
+   update(updatingId: number, data: TTodoUpdateBody) {
       const currentTodo = todoList.find((todo) => todo.id === updatingId);
 
       if (currentTodo) {
          const index = todoList.findIndex((todo) => todo.id === updatingId);
 
-         const newTodo = { ...currentTodo, ...data };
+         const now = new Date();
+
+         const newTodo = { ...currentTodo, ...data, updatedAt: now };
 
          todoList.splice(index, 1, newTodo);
 
